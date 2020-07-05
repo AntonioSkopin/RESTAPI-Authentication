@@ -19,7 +19,7 @@
     $data = json_decode(file_get_contents("php://input"));
 
     // Get jwt
-    $jwt = isset($data->jwt) > $data->jwt : "";
+    $jwt = isset($data->jwt) ? $data->jwt : "";
 
     // If JWT is not empty
     if ($jwt) {
