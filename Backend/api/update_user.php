@@ -47,7 +47,30 @@
 
             // Update the user record
             if ($user->update()) {
-                // Regenerate jwt will be here
+                // Regenerate JWT because user details may be different
+                $token = array(
+                    "iss" => $iss,
+                    "aud" => $aud,
+                    "iat" => $iat,
+                    "nbf" => $nbf,
+                    "data" => array(
+                        "id" => $user->id,
+                        "username" => $user->username,
+                        "email" => $user->email
+                    )
+                );
+
+                // Encode a new JWT
+                $jwt = JWT::encode($token, $key);
+
+                // Set response code to 200 (OK)
+                http_response_code(200);
+
+                // Response in json format
+                echo json_encode(array(
+                    "message" => "User was updated.",
+                    "jwt" => $jwt
+                ))
             }
             // Message if unable to update user
             else {
@@ -70,4 +93,11 @@
             ));
         }
     }
-    // Error message if jwt is empty will be here
+    // Error message if jwt is empty
+    else {
+        // Set response code to 401 (Unauthorized)
+        http_response_code(401);
+
+        // Tell the user access denied
+        echo json_encode(array("message" => "Access denied."));
+    }
