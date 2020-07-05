@@ -70,7 +70,7 @@
                 echo json_encode(array(
                     "message" => "User was updated.",
                     "jwt" => $jwt
-                ))
+                ));
             }
             // Message if unable to update user
             else {
