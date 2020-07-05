@@ -46,6 +46,43 @@
             return false;
         }
 
+        // Method to update the user info
+        public function update() {
+            // If password needs to be updated
+            $password_set = !empty($this->password) ? ", password = :password" : "";
+
+            // If no posted password, do not update the password
+            $query = "UPDATE ".$this->table_name. " 
+            SET username =:username, email =:email, {$password_set} WHERE id =:id";
+
+            // Prepare the query
+            $stmt = $this->conn->prepare($query);
+
+            // Sanitize
+            $this->username = htmlspecialchars(strip_tags($this->username));
+            $this->email = htmlspecialchars(strip_tags($this->email));
+
+            // Bind values from the form
+            $stmt->bindParam("username", $this->username);
+            $stmt->bindParam("email", $this->email);
+
+            // Hash the password before savind to database
+            if (!empty($this->password)) {
+                $this->password = htmlspecialchars(strip_tags($this->password));
+                $password_hash = password_hash($this->password, PASSWORD_BCRYPT);
+                $stmt->bindParam("password", $password_hash);
+            }
+
+            // Unique ID of record to be edited
+            $stmt->bindParam("id", $this->id);
+
+            // Execute the query
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
+        }
+
         // Method to check if the username or email is taken
         function isTaken() {
             // Select username and email query
