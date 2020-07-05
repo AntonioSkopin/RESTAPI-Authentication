@@ -21,29 +21,6 @@
     // Get posted data
     $data = json_decode(file_get_contents("php://input"));
 
-    // Set user property values
+    // Set product property values
     $user->username = $data->username;
-    $user->email = $data->email;
-    $user->password = $data->password;
-
-    // Create user
-    if (
-        !empty($user->username) &&
-        !empty($user->email) &&
-        !empty($user->password) &&
-        $user->create()
-    ) {
-        // Set response code to 200 (OK)
-        http_response_code(200);
-
-        // Display message: User is created
-        echo json_encode(array("message" => "User is created."));
-    }
-    // Message if unable to create the user
-    else {
-        // Set response code to 400 (Bad request)
-        http_response_code(400);
-
-        // Display message: Unable to create the user
-        echo json_encode(array("message" => "Unable to create the user."));
-    }
+    $username_exists = $user->usernameExists();

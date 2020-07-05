@@ -72,4 +72,42 @@
             }
             return false;
         }
+
+        // Method to check if the username exists
+        public function usernameExists() {
+            // Query to check if the username exists
+            $query = "SELECT id, email, password FROM ".$this->table_name." 
+            WHERE username = ? LIMIT 0,1";
+
+            // Prepare the query
+            $stmt = $this->conn->prepare($query);
+
+            // Sanitize
+            $this->username = htmlspecialchars(strip_tags($this->username));
+
+            // Bind given username value
+            $stmt->bindParam(1, $this->username);
+
+            // Execute the query
+            $stmt->execute();
+
+            // Get number of rows
+            $num = $stmt->rowCount();
+
+            // If username exists, assign values to object properties for easy access and use for php sessions
+            if ($num > 0) {
+                // Get record values
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // Assign values to object properties
+                $this->id = $row["id"];
+                $this->email = $row["email"];
+                $this->password = $row["password"];
+
+                // return true because username exists in the database
+                return true;
+            }
+            // Return false if username doesn't exist in the database
+            return false;
+        }
     }
