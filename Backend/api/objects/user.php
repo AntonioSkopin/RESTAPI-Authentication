@@ -53,7 +53,7 @@
 
             // If no posted password, do not update the password
             $query = "UPDATE ".$this->table_name. " 
-            SET username =:username, email =:email, {$password_set} WHERE id =:id";
+            SET username =:username, email =:email {$password_set} WHERE id =:id";
 
             // Prepare the query
             $stmt = $this->conn->prepare($query);
